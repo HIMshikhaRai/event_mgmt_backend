@@ -42,12 +42,24 @@ class EventController extends Controller
             'address' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
-            'event_picture' => 'required',
+            'event_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ticket_type' => 'required',
             'ticket_price' => 'required',
         ]);
-        
-        Event::create($request->post());
+
+        $pictureName = time().'.'.$request->event_picture->extension();  
+        $request->event_picture->move(public_path('uploads'), $pictureName);
+
+        $event = new Event;
+        $event->name = $request->name;
+        $event->description = $request->description;
+        $event->address = $request->address;
+        $event->start_date = $request->start_date;
+        $event->end_date = $request->end_date;
+        $event->event_picture = $pictureName;
+        $event->ticket_type = $request->ticket_type;
+        $event->ticket_price = $request->ticket_price;
+        $event->save();
 
         return redirect()->route('events.index')->with('success','Event has been created successfully.');
     }
@@ -60,7 +72,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        return view('event.show',compact('event'));
+        return view('events.show',compact('event'));
     }
 
     /**
@@ -82,7 +94,7 @@ class EventController extends Controller
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, int $id)
     {
         $request->validate([
             'name' => 'required',
@@ -90,12 +102,25 @@ class EventController extends Controller
             'address' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
-            'event_picture' => 'required',
+            'event_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ticket_type' => 'required',
             'ticket_price' => 'required',
         ]);
         
-        $event->fill($request->post())->save();
+        $pictureName = time().'.'.$request->event_picture->extension();  
+        $request->event_picture->move(public_path('uploads'), $pictureName);
+
+        $events = Event::where('id', $id)->get();
+        $event = $events->first();
+        $event->name = $request->name;
+        $event->description = $request->description;
+        $event->address = $request->address;
+        $event->start_date = $request->start_date;
+        $event->end_date = $request->end_date;
+        $event->event_picture = $pictureName;
+        $event->ticket_type = $request->ticket_type;
+        $event->ticket_price = $request->ticket_price;
+        $event->save();
 
         return redirect()->route('events.index')->with('success','Event has been updated successfully');
     }

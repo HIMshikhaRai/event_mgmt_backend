@@ -75,7 +75,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Event Picture:</strong>
-                        <input type="text" name="event_picture" class="form-control" placeholder="Event Picture">
+                        <input type="file" name="event_picture" class="form-control" placeholder="Event Picture">
                         @error('event_picture')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
